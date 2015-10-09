@@ -1,9 +1,10 @@
-answerToIndex = {"A":0, "B":1, "C":2, "D":3}
+global answerToIndex
+answerToIndex = {"A":0, "B":1, "C":2, "D":3, "UNKNOWN":-1}
 """
 class Question
 Holds a single question consisting of:
     - id (int) the question id
-    - answerInd (int) the index of the correct answer in the answers array
+    - answerInd (int) the index of the correct answer in the answers array. -1 indicates a question where the answer is not known
     - answers (string array) the array of possibleanswers
 """
 class Question():
@@ -32,8 +33,15 @@ def process_training_data(filename):
     return training_questions
 
 def process_validation_data(filename):
-    print 'derp'
+    validation_questions = []
+    with open(filename, 'r') as f:
+        for line in f:
+            parts = line.split('\t')
+            if not len(parts) == 6: #id question answerA answerB answerC answerD
+                raise Exception('Poorly formatted input line: \"'+line+'\"')
+            elif not parts[0] == 'id':
+                validation_questions.append(Question(parts[0], parts[1], "UNKNOWN", parts[2:]))
+    return validation_questions
 
-x = process_training_data('data/training_set.tsv')
-for y in x: print y
-print len(x)
+training = process_training_data('data/training_set.tsv')
+validation = process_validation_data('data/validation_set.tsv')
