@@ -25,8 +25,13 @@ class Question():
         ("C*: " if self.answerInd == 2 else "C: ") + self.answers[2] + '\n\t' + \
         ("D*: " if self.answerInd == 3 else "D: ") + self.answers[3]
 
-#solver superclass, simply override train and solve to create a new solver
-# UNTESTED
+"""
+class Solver
+Takes in data, labels the validation data with answers, and writes to an output file in specified format
+    - training_f (string) the name of the file with the training data
+    - validation_f (string) the name of the file with the validation data, lacking answers
+    - output_f (string) the name of the output file, which will contain id,answer pairs for each question from validation_f
+"""
 class Solver():
     def __init__(self, training_f, validation_f, output_f):
         self.training = process_training_data(training_f)
@@ -43,8 +48,11 @@ class Solver():
             q.answerInd = random.randint(0,3)
 
     def create_submission(self, filename):
-        pass
-        #TODO write out to filename in correct format
+        with open(filename, 'w') as f:
+            f.write('id,correctAnswer')
+            for q in self.validation:
+                f.write('\n' + str(q.id) + ',' + indexToAnswer[q.answerInd])
+
 
 def process_training_data(filename):
     training_questions = []
@@ -68,4 +76,4 @@ def process_validation_data(filename):
                 validation_questions.append(Question(parts[0], parts[1], "UNKNOWN", parts[2:]))
     return validation_questions
 
-
+x = Solver('data/training_set.tsv', 'data/validation_set.tsv', 'data/derp.csv')
