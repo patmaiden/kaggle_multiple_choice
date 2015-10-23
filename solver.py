@@ -41,7 +41,8 @@ class Solver():
         self.create_submission(output_f)
     
     def train(self):
-        pass
+        for q in self.training:
+            print q
     
     def solve(self):
         for q in self.validation:
